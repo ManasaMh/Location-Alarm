@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style >
+#mapholder {
+  			width: 100%;
+  			height: 400px;
+  	 }
+</style>
+</head>
+<body>
+<div id="mapholder"></div>
+<br>
+dest:
+<input type='text' size="30px" id="t2">
+<br>
+<br>
+<b>Mode of Travel: </b>
+<select id="mode">
+  <option value="DRIVING">Cab</option>
+  <option value="DRIVING">Driving</option>
+  <option value="WALKING">Walking</option>
+  <option value="BICYCLING">Bicycling</option>
+  <option value="TRANSIT">Bus/Rail</option>
+ 
+</select><BR><br>
+<input type="button" value="dist" id="b1" onclick="get_coordinates()">
+<br><br>
+<input type='text' size="30px" id="t3"> &nbsp;&nbsp;
+<input type='text' size="30px" id="t4">
+<script>
+
+var direction_service,directionsDisplay;
+
+//FUNCTION CALLED WHEN MAP IS LOADED.
+function initMap()
+
+{ 
+var bng = {lat: 12.9716, lng: 77.5946};
+var mapopt={
+center:bng,
+zoom:13,
+mapTypeId: 'roadmap'
+};
+var map=new google.maps.Map(document.getElementById("mapholder"),mapopt);
+var input = document.getElementById('t2');
+var autocomplete = new google.maps.places.Autocomplete(input);
+  direction_service=new google.maps.DirectionsService;
+  directionsDisplay = new google.maps.DirectionsRenderer;
+  directionsDisplay.setMap(map);
+ 
+//Direction service
+
+}
+//Calculate the distance between the origin and destination.
+
+function calculate_dist(position)  
+{
+  var origin= new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var destination=document.getElementById("t2").value;
+  var selectedMode = document.getElementById('mode').value;
+  var request;
+  
+  request={
+    origin:origin,
+    destination:destination,
+    travelMode:google.maps.TravelMode[selectedMode],
+    unitSystem:google.maps.UnitSystem.METRIC,
+
+    transitOptions:{
+     modes:['BUS','RAIL']
+    }
+  }
+  
+    
+//pass this to route method and display it.
+    direction_service.route(request,
+    function(response,status){
+      if(status==='OK'){
+        if(response.routes[0].legs[0].distance.value<=500)
+         {   
+           console.log("Inside if loop");
+          //window.open("https://www.w3schools.com");
+          window.location.href = 'accounts/alarm';
+            // window.alert("Hi");
+        }
+        directionsDisplay.setDirections(response);
+        console.log(response);
+        var total_distance=" " +response.routes[0].legs[0].distance.text;//var origin_longitude=position.coords.longitude;
+        var total_time=" " +response.routes[0].legs[0].duration.text;//var origin_longitude=position.coords.longitude;
+        //window.alert("the total dist is " +total_distance +" and the time required is "+total_time);
+        document.getElementById('t3').value=total_distance;
+        document.getElementById('t4').value=total_time;
+      }
+
+    });
+     
+}
+
+//RETURN THE COORDINATES OF ORIGIN
+
+function get_coordinates()
+{
+    if(navigator.geolocation)
+    {
+        navigator.geolocation.watchPosition(calculate_dist);
+    }
+    else
+    {
+        window.alert("NOT COMPATIBLE");
+    }
+}
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwJ2Vepe9L2Miuh7QH87SR_RItIXHlX6Q&libraries=places&callback=initMap"
+async defer></script>
+</body>
+</html>

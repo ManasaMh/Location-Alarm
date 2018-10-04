@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+  <body><h1> YOU ALMOST REAAACHEEEDDDDD</h1>
+<audio controls id ="alarms" type="audio/mpeg" loop >
+  
+    <source src="{% static 'accounts/rooster.mp3' %}">
+  </audio> 
+  <script>
+    document.getElementById('alarms').play();
+   </script>
+   <script>
+   function dismiss()
+   {
+     document.getElementById('alarms').pause();
+   }
+   </script>
+
+          <button onclick=back_to_maps()><label>Dismiss</label></button>
+        
+  <script>
+  function back_to_maps()
+  {
+    //window.alert('ioo');
+    window.location.href='../maps';
+  }
+  </script>
+</body>
+</html>
